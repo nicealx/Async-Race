@@ -97,6 +97,7 @@ export default class GaragePage {
       this.update.insertValues(name, color);
       this.carID = e.detail.carID;
     }) as EventListener);
+
     return track;
   }
 

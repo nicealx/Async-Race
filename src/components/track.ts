@@ -1,3 +1,4 @@
+import './track.css';
 import { METHODS, URLs } from '../types/types';
 import ButtonCreator from '../utils/button-creator';
 import ElementCreator from '../utils/element-creator';
@@ -18,6 +19,8 @@ export default class RaceTrack {
 
   private element: HTMLElement;
 
+  private highway: HTMLElement;
+
   constructor(id: string, name: string, color: string) {
     this.name = name;
     this.selectButton = new ButtonCreator('select btn', 'button', 'select', false);
@@ -26,6 +29,7 @@ export default class RaceTrack {
     this.deleteButton = new ButtonCreator('delete btn', 'button', 'delete', false);
     this.car = new CarView(color);
     this.element = this.createTrack();
+    this.highway = this.createHighway();
     this.createView(id, name);
   }
 
@@ -38,6 +42,7 @@ export default class RaceTrack {
     const del = this.deleteButton.getElement();
     select.id = id;
     del.id = id;
+    start.id = id;
 
     const deleteCar = new CustomEvent('deleteCar', {
       bubbles: true,
@@ -64,6 +69,32 @@ export default class RaceTrack {
       }));
     });
 
+    start.addEventListener('click', async () => {
+      const idCar = start.id;
+      this.startButton.setState(true);
+      await this.engineCar(idCar, 'started')
+        .then((res) => {
+          if (res.status === 404) {
+            this.startButton.setState(false);
+            throw new Error('Car was not founded');
+          }
+
+          if (res.status === 400) {
+            this.startButton.setState(false);
+            throw new Error('Wrong parameters');
+          }
+          return res.json();
+        }).then((res) => {
+          const { velocity, distance } = res;
+          const timeout = Math.floor(distance / velocity);
+          this.highway.classList.add('drive');
+          this.animateCar(`${timeout}ms`);
+          setTimeout(() => {
+            this.startButton.setState(false);
+          }, timeout);
+        });
+    });
+
     container.append(select, start, stop, del);
     return container;
   }
@@ -75,17 +106,9 @@ export default class RaceTrack {
     return raceTrack;
   }
 
-  public async editCar(id: string, name: string, color: string) {
-    this.car.updateCar(color);
-    await fetch(`${URLs.garage}/${id}`, {
-      method: METHODS.PUT,
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        name,
-        color,
-      }),
+  private async engineCar(id: string, status: string) {
+    return fetch(`${URLs.engine}/?id=${id}&status=${status}`, {
+      method: METHODS.PATCH,
     });
   }
 
@@ -109,10 +132,13 @@ export default class RaceTrack {
 
   private createView(id: string, name: string) {
     const control = this.createControls(id);
-    const highway = this.createHighway();
     const carName = this.createCarName(name);
-    highway.append(this.car.getElement());
-    this.element.append(control, carName, highway);
+    this.highway.append(this.car.getElement());
+    this.element.append(control, carName, this.highway);
+  }
+
+  private animateCar(velocity: string) {
+    this.car.getElement().style.setProperty('--v', velocity);
   }
 
   public getElement() {

@@ -10,6 +10,7 @@ export enum URLs {
   main = 'http://127.0.0.1:3000',
   garage = `${URLs.main}/garage`,
   winners = `${URLs.main}/winners`,
+  engine = `${URLs.main}/engine`,
 }
 
 export enum METHODS {
@@ -17,6 +18,7 @@ export enum METHODS {
   GET = 'GET',
   PUT = 'PUT',
   DELETE = 'DELETE',
+  PATCH = 'PATCH',
 }
 
 export enum NS {

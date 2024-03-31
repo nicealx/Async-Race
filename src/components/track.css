@@ -1,0 +1,9 @@
+.track__highway.drive svg {
+  animation: drive var(--v) linear forwards;
+}
+
+@keyframes drive {
+  to {
+    margin-left: max(0px, 100% - 96px);
+  }
+}
