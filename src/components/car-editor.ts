@@ -14,7 +14,7 @@ export default class CarEditor {
   constructor(className: string, placeholder: string, text: string, state: boolean) {
     this.inputName = new InputCreator('car-name', 'text', placeholder, state, 'name', '');
     this.inputColor = new InputCreator('car-color', 'color', '', state, 'color', '');
-    this.buttonCreate = new ButtonCreator('car-button', 'submit', text, state);
+    this.buttonCreate = new ButtonCreator('car-button btn', 'submit', text, state);
     this.create = this.carCreate(className);
   }
 

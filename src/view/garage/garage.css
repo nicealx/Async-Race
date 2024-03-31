@@ -1,0 +1,57 @@
+.garage {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 10px 0;
+  flex-grow: 1;
+}
+
+.garage__title {
+  text-align: center;
+  margin: 0;
+  color: var(--second-element);
+}
+
+.garage__manager {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 20px;
+}
+
+.creator,
+.updater {
+  display: flex;
+  gap: 10px;
+}
+
+.car-name {
+  border: none;
+  border-radius: 5px;
+  padding: 0 10px;
+  background-color: var(--main);
+  color: var(--second-element);
+  font-size: 16px;
+}
+
+.car-color {
+  cursor: pointer;
+}
+
+.car-color:disabled {
+  cursor: inherit;
+}
+
+.car-name::placeholder {
+  color: var(--second-element);
+}
+
+.car-name:disabled::placeholder {
+  color: var(--second);
+}
+
+.pagination {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+}

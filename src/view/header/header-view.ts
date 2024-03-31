@@ -1,3 +1,4 @@
+import './header.css';
 import AppContainer from '../../components/app-container';
 import ButtonCreator from '../../utils/button-creator';
 import ElementCreator from '../../utils/element-creator';
@@ -16,15 +17,15 @@ export default class HeaderView {
   constructor() {
     const header = new ElementCreator('header', 'header', '');
     this.element = header.getElement();
-    this.appContainer = new AppContainer('div', 'app', '');
+    this.appContainer = new AppContainer('main', 'app', '');
     this.garagePage = new GaragePage('garage', 'garage');
     this.winnersPage = new WinnersPage('winners', 'winners');
     this.createView();
   }
 
   private createView() {
-    const garageButton = new ButtonCreator('garage', 'button', 'Garage', false);
-    const winnersButton = new ButtonCreator('winners', 'button', 'Winners', false);
+    const garageButton = new ButtonCreator('garage__btn btn', 'button', 'Garage', false);
+    const winnersButton = new ButtonCreator('winners__btn btn', 'button', 'Winners', false);
     const garage = garageButton.getElement();
     const winners = winnersButton.getElement();
     garage.addEventListener('click', (e) => {

@@ -1,9 +1,53 @@
-.track__highway.drive svg {
+.track {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.track__race {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 10px 0;
+}
+
+.track__control {
+  display: flex;
+  justify-content: center;
+  gap: 5px;
+}
+
+.track__car-name {
+  font-size: 20px;
+  color: var(--second-element);
+}
+
+.track__highway {
+  position: relative;
+}
+
+.track__highway::after {
+  content: '';
+  position: absolute;
+  width: 100%;
+  height: 60%;
+  left: 0;
+  bottom: -5px;
+  background-image: url('../img/race.jpg');
+  z-index: 1;
+}
+
+.track__car {
+  position: relative;
+  z-index: 2;
+}
+
+.track__highway.drive .track__car {
   animation: drive var(--v) linear forwards;
 }
 
 @keyframes drive {
   to {
-    margin-left: max(0px, 100% - 96px);
+    margin-left: max(0px, 100% - 105px);
   }
 }

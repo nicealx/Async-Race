@@ -45,13 +45,13 @@ export default class RaceTrack {
     const stop = this.stopButton.getElement();
     const del = this.deleteButton.getElement();
 
-    const deleteCar = new CustomEvent('deleteCar', {
-      bubbles: true,
-    });
-
-    del.addEventListener('click', () => {
-      this.deleteCar(this.carID);
-      del.dispatchEvent(deleteCar);
+    del.addEventListener('click', async () => {
+      await fetch(`${URLs.garage}/${this.carID}`, {
+        method: METHODS.DELETE,
+      });
+      del.dispatchEvent(new CustomEvent('deleteCar', {
+        bubbles: true,
+      }));
     });
 
     select.addEventListener('click', async () => {
@@ -72,6 +72,9 @@ export default class RaceTrack {
     start.addEventListener('click', async () => {
       this.startButton.setState(true);
       this.stopButton.setState(false);
+      this.deleteButton.setState(true);
+      this.selectButton.setState(true);
+      start.classList.add('loading');
       await this.engineCar(this.carID, 'started')
         .then((res) => {
           if (res.status === 404) {
@@ -89,11 +92,13 @@ export default class RaceTrack {
           const timeout = Math.floor(distance / velocity);
           this.highway.classList.add('drive');
           this.animateCar(`${timeout}ms`);
+          start.classList.remove('loading');
         });
     });
 
     stop.addEventListener('click', async () => {
       this.stopButton.setState(true);
+      stop.classList.add('loading');
       await this.engineCar(this.carID, 'stopped')
         .then((res) => {
           if (res.status === 404) {
@@ -107,8 +112,11 @@ export default class RaceTrack {
           }
           this.highway.classList.remove('drive');
           setTimeout(() => {
-            this.stopButton.setState(false);
+            this.stopButton.setState(true);
             this.startButton.setState(false);
+            this.deleteButton.setState(false);
+            this.selectButton.setState(false);
+            stop.classList.remove('loading');
           }, 0);
         });
     });

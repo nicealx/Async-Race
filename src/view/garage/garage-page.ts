@@ -1,3 +1,4 @@
+import './garage.css';
 import CarEditor from '../../components/car-editor';
 import RaceTrack from '../../components/track';
 import {
@@ -45,14 +46,15 @@ export default class GaragePage {
     this.container.id = id;
     this.container.className = className;
     this.title = document.createElement('h1');
+    this.title.className = 'garage__title';
     this.create = new CarEditor('creator', 'Enter car name', 'Create', false);
     this.update = new CarEditor('updater', 'Enter new car name', 'Update', true);
-    this.generate = new ButtonCreator('generate', 'button', 'Generate 100 cars', false);
+    this.generate = new ButtonCreator('generate btn', 'button', 'Generate 100 cars', false);
     this.garageManagement = new ElementCreator('div', 'garage__manager', '');
     this.garageTitle = new ElementCreator('h2', 'garage__title', 'Page №1');
     this.track = new ElementCreator('div', 'track', '');
-    this.prev = new ButtonCreator('prev', 'button', 'prev', true);
-    this.next = new ButtonCreator('next', 'button', 'next', false);
+    this.prev = new ButtonCreator('prev btn', 'button', 'prev', true);
+    this.next = new ButtonCreator('next btn', 'button', 'next', false);
     this.pagination = new ElementCreator('div', 'pagination', '');
     this.carID = 0;
     this.createView();
@@ -175,6 +177,8 @@ export default class GaragePage {
   private fieldGenerate() {
     const generate = this.generate.getElement();
     generate.addEventListener('click', async () => {
+      this.generate.setState(true);
+      generate.classList.add('loading');
       const cars = new Array(100);
       for (let i = 0; i < cars.length; i += 1) {
         const randomName = carsName[Math.floor(Math.random() * carsName.length)];
@@ -200,6 +204,8 @@ export default class GaragePage {
         await this.updateTitle(this.count);
         await this.carsList();
         this.checkPagination();
+        this.generate.setState(false);
+        generate.classList.remove('loading');
       });
     });
 

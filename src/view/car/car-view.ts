@@ -1,6 +1,6 @@
 import { NS } from '../../types/types';
 
-const carCode = `<g transform="translate(-500, 600) scale(0.100000,-0.100000)">
+const carCode = `<g transform="translate(-400, 600) scale(0.100000,-0.100000)">
 <path d="M3525 5341 c-72 -18 -79 -28 -90 -121 -4 -30 -11 -62 -16 -71 -4 -9
 -97 -51 -206 -94 -774 -304 -1348 -540 -1603 -661 -163 -77 -222 -91 -421
 -104 -85 -5 -170 -14 -189 -20 -101 -32 -362 -58 -620 -63 l-115 -2 -47 -80
@@ -93,6 +93,7 @@ export default class CarView {
 
   constructor(color: string) {
     this.car = document.createElementNS(NS.ns, 'svg');
+    this.car.classList.add('track__car');
     this.car.setAttribute('width', '105px');
     this.car.setAttribute('height', '35px');
     this.car.setAttribute('viewBox', '0 0 500 500');

@@ -1,0 +1,73 @@
+:root {
+  --main: #564F6F;
+  --second: #2D283E;
+  --main-element: #4C495D;
+  --second-element: #D1D7E0;
+  --reserve: #802BB1;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+.body {
+  display: flex;
+  flex-direction: column;
+  margin: 0 auto;
+  min-height: 100vh;
+}
+
+.btn {
+  position: relative;
+  padding: 10px 20px;
+  text-transform: uppercase;
+  background-color: var(--main-element);
+  border: none;
+  color: var(--second-element);
+  border-radius: 5px;
+  cursor: pointer;
+  transition: color 0.3s, background-color 0.03s;
+}
+
+.btn.loading::after {
+  content: '';
+  position: absolute;
+  width: 10px;
+  height: 10px;
+  top: 50%;
+  left: 50%;
+  border-radius: 100%;
+  border: 5px solid var(--second);
+  border-top: 5px solid var(--reserve);
+  animation: spin 2s linear infinite;
+}
+
+.btn:disabled {
+  cursor: inherit;
+  background-color: var(--main);
+  color: var(--second);
+}
+
+.app {
+  display: flex;
+  flex-direction: column;
+  margin: 0 auto;
+  padding: 0 20px;
+  background-color: var(--second);
+  width: 100%;
+  flex-grow: 1;
+}
+
+.car-color {
+  height: 100%;
+}
+
+@keyframes spin {
+  0% {
+    transform: translate3d(-50%, -50%, 0) rotate(0deg);
+  }
+
+  100% {
+    transform: translate3d(-50%, -50%, 0) rotate(360deg);
+  }
+}

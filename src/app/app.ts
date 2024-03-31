@@ -5,6 +5,7 @@ export default class App {
 
   constructor() {
     this.container = document.body;
+    this.container.className = 'body';
   }
 
   run() {
