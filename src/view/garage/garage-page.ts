@@ -167,14 +167,14 @@ export default class GaragePage {
         });
       }
       Promise.allSettled(cars).then(async (response) => {
-        let count = 0;
         response.forEach((el) => {
           if (el.status === 'fulfilled') {
-            count += 1;
+            this.count += 1;
           }
         });
-        await this.updateTitle(count);
+        await this.updateTitle(this.count);
         await this.carsList();
+        this.checkPagination();
       });
     });
 
