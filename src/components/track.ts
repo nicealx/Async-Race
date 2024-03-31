@@ -21,6 +21,8 @@ export default class RaceTrack {
 
   private highway: HTMLElement;
 
+  private carID: string;
+
   constructor(id: string, name: string, color: string) {
     this.name = name;
     this.selectButton = new ButtonCreator('select btn', 'button', 'select', false);
@@ -30,39 +32,37 @@ export default class RaceTrack {
     this.car = new CarView(color);
     this.element = this.createTrack();
     this.highway = this.createHighway();
-    this.createView(id, name);
+    this.carID = id;
+    this.createView(name);
   }
 
-  private createControls(id: string) {
+  private createControls() {
+    this.stopButton.setState(true);
     const wrapper = new ElementCreator('div', 'track__control', '');
     const container = wrapper.getElement();
     const select = this.selectButton.getElement();
     const start = this.startButton.getElement();
     const stop = this.stopButton.getElement();
     const del = this.deleteButton.getElement();
-    select.id = id;
-    del.id = id;
-    start.id = id;
 
     const deleteCar = new CustomEvent('deleteCar', {
       bubbles: true,
     });
 
     del.addEventListener('click', () => {
-      this.deleteCar(del.id);
+      this.deleteCar(this.carID);
       del.dispatchEvent(deleteCar);
     });
 
     select.addEventListener('click', async () => {
-      const idCar = select.id;
-      const response = await fetch(`${URLs.garage}/${idCar}`, {
+      const response = await fetch(`${URLs.garage}/${this.carID}`, {
         method: METHODS.GET,
       }).then((res) => res.json()).then((res) => res);
       const { name, color } = response;
       select.dispatchEvent(new CustomEvent('selectCar', {
         bubbles: true,
         detail: {
-          carID: idCar,
+          carID: this.carID,
           carName: name,
           carColor: color,
         },
@@ -70,9 +70,9 @@ export default class RaceTrack {
     });
 
     start.addEventListener('click', async () => {
-      const idCar = start.id;
       this.startButton.setState(true);
-      await this.engineCar(idCar, 'started')
+      this.stopButton.setState(false);
+      await this.engineCar(this.carID, 'started')
         .then((res) => {
           if (res.status === 404) {
             this.startButton.setState(false);
@@ -89,9 +89,27 @@ export default class RaceTrack {
           const timeout = Math.floor(distance / velocity);
           this.highway.classList.add('drive');
           this.animateCar(`${timeout}ms`);
-          setTimeout(() => {
+        });
+    });
+
+    stop.addEventListener('click', async () => {
+      this.stopButton.setState(true);
+      await this.engineCar(this.carID, 'stopped')
+        .then((res) => {
+          if (res.status === 404) {
             this.startButton.setState(false);
-          }, timeout);
+            throw new Error('Car was not founded');
+          }
+
+          if (res.status === 400) {
+            this.startButton.setState(false);
+            throw new Error('Wrong parameters');
+          }
+          this.highway.classList.remove('drive');
+          setTimeout(() => {
+            this.stopButton.setState(false);
+            this.startButton.setState(false);
+          }, 0);
         });
     });
 
@@ -130,8 +148,8 @@ export default class RaceTrack {
     return carName;
   }
 
-  private createView(id: string, name: string) {
-    const control = this.createControls(id);
+  private createView(name: string) {
+    const control = this.createControls();
     const carName = this.createCarName(name);
     this.highway.append(this.car.getElement());
     this.element.append(control, carName, this.highway);
