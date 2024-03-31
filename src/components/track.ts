@@ -39,8 +39,29 @@ export default class RaceTrack {
     select.id = id;
     del.id = id;
 
+    const deleteCar = new CustomEvent('deleteCar', {
+      bubbles: true,
+    });
+
     del.addEventListener('click', () => {
       this.deleteCar(del.id);
+      del.dispatchEvent(deleteCar);
+    });
+
+    select.addEventListener('click', async () => {
+      const idCar = select.id;
+      const response = await fetch(`${URLs.garage}/${idCar}`, {
+        method: METHODS.GET,
+      }).then((res) => res.json()).then((res) => res);
+      const { name, color } = response;
+      select.dispatchEvent(new CustomEvent('selectCar', {
+        bubbles: true,
+        detail: {
+          carID: idCar,
+          carName: name,
+          carColor: color,
+        },
+      }));
     });
 
     container.append(select, start, stop, del);

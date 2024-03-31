@@ -12,8 +12,8 @@ export default class CarEditor {
   private buttonCreate: ButtonCreator;
 
   constructor(className: string, placeholder: string, text: string, state: boolean) {
-    this.inputName = new InputCreator('car-name', 'text', placeholder, state, 'name');
-    this.inputColor = new InputCreator('car-color', 'color', '', state, 'color');
+    this.inputName = new InputCreator('car-name', 'text', placeholder, state, 'name', '');
+    this.inputColor = new InputCreator('car-color', 'color', '', state, 'color', '');
     this.buttonCreate = new ButtonCreator('car-button', 'submit', text, state);
     this.create = this.carCreate(className);
   }
@@ -33,6 +33,11 @@ export default class CarEditor {
     this.inputName.setState(state);
     this.inputColor.setState(state);
     this.buttonCreate.setState(state);
+  }
+
+  public insertValues(name: string, color: string) {
+    this.inputName.setValue(name);
+    this.inputColor.setValue(color);
   }
 
   public getElement() {

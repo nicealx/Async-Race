@@ -1,10 +1,17 @@
 export default class InputCreator {
   private element: HTMLInputElement;
 
-  constructor(className: string, type: string, placeholder: string, state: boolean, name: string) {
+  constructor(
+    className: string,
+    type: string,
+    placeholder: string,
+    state: boolean,
+    name: string,
+    value: string,
+  ) {
     this.element = document.createElement('input');
     this.element.required = true;
-    this.createElement(className, type, placeholder, state, name);
+    this.createElement(className, type, placeholder, state, name, value);
   }
 
   private createElement(
@@ -13,12 +20,14 @@ export default class InputCreator {
     placeholder: string,
     state: boolean,
     name: string,
+    value: string,
   ) {
     this.setClass(className);
     this.setType(type);
     this.setPlaceholder(placeholder);
     this.setState(state);
     this.setName(name);
+    this.setValue(value);
   }
 
   private setClass(className: string) {
@@ -35,6 +44,10 @@ export default class InputCreator {
 
   private setName(name: string) {
     this.element.name = name;
+  }
+
+  public setValue(value: string) {
+    this.element.value = value;
   }
 
   public setState(state: boolean) {

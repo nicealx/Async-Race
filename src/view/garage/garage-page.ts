@@ -1,6 +1,8 @@
 import CarEditor from '../../components/car-editor';
 import RaceTrack from '../../components/track';
-import { CountCarsOnPage, METHODS, URLs } from '../../types/types';
+import {
+  CountCarsOnPage, METHODS, URLs,
+} from '../../types/types';
 import ButtonCreator from '../../utils/button-creator';
 import ElementCreator from '../../utils/element-creator';
 
@@ -34,6 +36,8 @@ export default class GaragePage {
 
   private pagination: ElementCreator;
 
+  private carID: number;
+
   constructor(id: string, className: string) {
     this.count = 0;
     this.numberOfPage = 1;
@@ -50,20 +54,22 @@ export default class GaragePage {
     this.prev = new ButtonCreator('prev', 'button', 'prev', true);
     this.next = new ButtonCreator('next', 'button', 'next', false);
     this.pagination = new ElementCreator('div', 'pagination', '');
+    this.carID = 0;
     this.createView();
   }
 
   private async createView() {
     const create = this.fieldCreate();
-    const update = this.update.getElement();
+    const update = this.fieldUpdate();
     const generate = this.fieldGenerate();
-    this.count = await this.getCountCars();
+    await this.getCountCars();
     this.title.textContent = `Garage (${this.count})`;
     const garageTitle = this.garageTitle.getElement();
     const garageManagement = this.garageManagement.getElement();
     garageManagement.append(create, update, generate);
     this.carsList();
     const pagination = this.paginationBlock();
+    const track = this.trackRace();
     this.checkPagination();
     this.nextPage();
     this.prevPage();
@@ -71,9 +77,27 @@ export default class GaragePage {
       this.title,
       garageManagement,
       garageTitle,
-      this.track.getElement(),
+      track,
       pagination,
     );
+  }
+
+  private trackRace() {
+    const track = this.track.getElement();
+    track.addEventListener('deleteCar', async () => {
+      await this.getCountCars();
+      await this.updateTitle(this.count);
+      await this.carsList();
+      this.checkPagination();
+    });
+    track.addEventListener('selectCar', ((e: CustomEvent) => {
+      const name = e.detail.carName;
+      const color = e.detail.carColor;
+      this.update.setState(false);
+      this.update.insertValues(name, color);
+      this.carID = e.detail.carID;
+    }) as EventListener);
+    return track;
   }
 
   private async carsList() {
@@ -190,7 +214,7 @@ export default class GaragePage {
       const color = formData.get('color');
       if (name && color) {
         await this.createCar(name.toString(), color.toString());
-        this.count = await this.getCountCars();
+        await this.getCountCars();
         await this.updateTitle(this.count);
         await this.carsList();
         this.checkPagination();
@@ -201,6 +225,24 @@ export default class GaragePage {
     return create;
   }
 
+  private fieldUpdate() {
+    const update = this.update.getElement();
+    update.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const formData = new FormData(update);
+      const name = formData.get('name');
+      const color = formData.get('color');
+      if (name && color) {
+        await this.updateCar(this.carID, name.toString(), color.toString());
+        await this.carsList();
+        update.reset();
+        this.update.setState(true);
+      }
+    });
+
+    return update;
+  }
+
   private async updateTitle(count: number) {
     this.title.textContent = `Garage (${count})`;
   }
@@ -208,12 +250,25 @@ export default class GaragePage {
   private async getCountCars() {
     const response = await fetch(URLs.garage);
     const res = await response.json();
-    return res.length;
+    this.count = res.length;
   }
 
   private async createCar(carName: string, carColor: string) {
     return fetch(URLs.garage, {
       method: METHODS.POST,
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        name: carName,
+        color: carColor,
+      }),
+    });
+  }
+
+  private async updateCar(id: number, carName: string, carColor: string) {
+    return fetch(`${URLs.garage}/${id}`, {
+      method: METHODS.PUT,
       headers: {
         'Content-Type': 'application/json',
       },
