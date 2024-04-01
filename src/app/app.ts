@@ -1,4 +1,5 @@
 import HeaderView from '../view/header/header-view';
+import ModalView from '../view/modal/modal-view';
 
 export default class App {
   private container: HTMLElement;
@@ -11,6 +12,7 @@ export default class App {
   run() {
     const header = new HeaderView();
     const content = header.getAppContainer();
-    this.container.append(header.getElement(), content);
+    const modal = new ModalView('div', 'overlay', '');
+    this.container.append(header.getElement(), content, modal.getElement());
   }
 }
