@@ -17,7 +17,7 @@ export default class ModalView extends ElementCreator {
     ModalView.overlay = this.getElement();
     this.modal = new ElementCreator('div', 'modal', '');
     ModalView.modalTitle = new ElementCreator('h3', 'modal__title', 'Modal title');
-    this.modalClose = new ElementCreator('div', 'modal__close', '');
+    this.modalClose = new ElementCreator('div', 'modal__close', 'x');
     ModalView.modalTexContent = new ElementCreator('p', 'modal__text', 'Some text');
     this.createView();
   }
