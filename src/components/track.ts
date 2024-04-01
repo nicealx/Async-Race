@@ -110,11 +110,17 @@ export default class RaceTrack {
         .then((res) => {
           if (res.status === 404) {
             this.startButton.setState(false);
+            ModalView.addClass('show');
+            ModalView.updateTitle('Error');
+            ModalView.updateTextContent('Wrong parameters');
             throw new Error('Car was not founded');
           }
 
           if (res.status === 400) {
             this.startButton.setState(false);
+            ModalView.addClass('show');
+            ModalView.updateTitle('Error');
+            ModalView.updateTextContent('Wrong parameters');
             throw new Error('Wrong parameters');
           }
           this.highway.classList.remove('drive');
