@@ -256,8 +256,9 @@ export default class GaragePage {
 
   private async getCountCars() {
     const response = await fetch(URLs.garage);
-    const res = await response.json();
-    this.count = res.length;
+    const items = await response.json();
+    const count = items.headers.get('X-Total-Count');
+    this.count = Number(count);
   }
 
   private async createCar(carName: string, carColor: string) {
