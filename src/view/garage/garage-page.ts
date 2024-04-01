@@ -114,7 +114,7 @@ export default class GaragePage {
   }
 
   private trackManager() {
-    const generate = this.fieldGenerate();
+    const generate = this.buttonGenerate();
     const management = this.trackManagement.getElement();
     management.append(generate);
 
@@ -192,7 +192,7 @@ export default class GaragePage {
     });
   }
 
-  private fieldGenerate() {
+  private buttonGenerate() {
     const generate = this.generate.getElement();
     generate.addEventListener('click', async () => {
       this.generate.setState(true);
