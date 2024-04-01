@@ -3,6 +3,7 @@ import { METHODS, URLs } from '../types/types';
 import ButtonCreator from '../utils/button-creator';
 import ElementCreator from '../utils/element-creator';
 import CarView from '../view/car/car-view';
+import ModalView from '../view/modal/modal-view';
 
 export default class RaceTrack {
   private name: string;
@@ -79,11 +80,17 @@ export default class RaceTrack {
         .then((res) => {
           if (res.status === 404) {
             this.startButton.setState(false);
+            ModalView.addClass('show');
+            ModalView.updateTitle('Error');
+            ModalView.updateTextContent(`Car ID: ${this.carID} was not founded`);
             throw new Error('Car was not founded');
           }
 
           if (res.status === 400) {
             this.startButton.setState(false);
+            ModalView.addClass('show');
+            ModalView.updateTitle('Error');
+            ModalView.updateTextContent('Wrong parameters');
             throw new Error('Wrong parameters');
           }
           return res.json();
