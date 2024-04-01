@@ -25,6 +25,8 @@ export default class GaragePage {
 
   private garageManagement: ElementCreator;
 
+  private trackManagement: ElementCreator;
+
   private garageTitle: ElementCreator;
 
   private track: ElementCreator;
@@ -50,7 +52,8 @@ export default class GaragePage {
     this.create = new CarEditor('creator', 'Enter car name', 'Create', false);
     this.update = new CarEditor('updater', 'Enter new car name', 'Update', true);
     this.generate = new ButtonCreator('generate btn', 'button', 'Generate 100 cars', false);
-    this.garageManagement = new ElementCreator('div', 'garage__manager', '');
+    this.garageManagement = new ElementCreator('div', 'garage__manager car-manager', '');
+    this.trackManagement = new ElementCreator('div', 'garage__manager', '');
     this.garageTitle = new ElementCreator('h2', 'garage__title', 'Page №1');
     this.track = new ElementCreator('div', 'track', '');
     this.prev = new ButtonCreator('prev btn', 'button', 'prev', true);
@@ -61,14 +64,11 @@ export default class GaragePage {
   }
 
   private async createView() {
-    const create = this.fieldCreate();
-    const update = this.fieldUpdate();
-    const generate = this.fieldGenerate();
+    const garageManagement = this.carManager();
+    const trackManagement = this.trackManager();
     await this.getCountCars();
     this.title.textContent = `Garage (${this.count})`;
     const garageTitle = this.garageTitle.getElement();
-    const garageManagement = this.garageManagement.getElement();
-    garageManagement.append(create, update, generate);
     this.carsList();
     const pagination = this.paginationBlock();
     const track = this.trackRace();
@@ -78,6 +78,7 @@ export default class GaragePage {
     this.container.append(
       this.title,
       garageManagement,
+      trackManagement,
       garageTitle,
       track,
       pagination,
@@ -101,6 +102,23 @@ export default class GaragePage {
     }) as EventListener);
 
     return track;
+  }
+
+  private carManager() {
+    const create = this.fieldCreate();
+    const update = this.fieldUpdate();
+    const management = this.garageManagement.getElement();
+    management.append(create, update);
+
+    return management;
+  }
+
+  private trackManager() {
+    const generate = this.fieldGenerate();
+    const management = this.trackManagement.getElement();
+    management.append(generate);
+
+    return management;
   }
 
   private async carsList() {
